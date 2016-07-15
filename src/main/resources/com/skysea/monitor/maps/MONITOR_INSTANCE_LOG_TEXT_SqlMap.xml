@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.skysea.monitor.domain.MonitorInstanceLogText" >
+
+	<resultMap id="monitorInstanceLogTextResultForList" type="com.skysea.monitor.domain.MonitorInstanceLogText">
+		<result column="id" property="id" jdbcType="INTEGER" />
+		<result column="monitor_instance_log_id" property="monitorInstanceLogId" jdbcType="INTEGER" />
+		<result column="received_content" property="receivedContent" jdbcType="LONGVARCHAR" />
+	</resultMap>
+
+	<resultMap id="monitorInstanceLogTextResult" type="com.skysea.monitor.domain.MonitorInstanceLogText" extends="monitorInstanceLogTextResultForList">
+	</resultMap>
+
+	<sql id="sf-monitorInstanceLogText">
+			<if test="id != null" > and id = #{id,jdbcType=INTEGER}</if>
+			<if test="monitorInstanceLogId != null" > and monitor_instance_log_id = #{monitorInstanceLogId,jdbcType=INTEGER}</if>
+			<if test="receivedContent != null" > and received_content = #{receivedContent,jdbcType=LONGVARCHAR}</if>
+	</sql>
+
+	<select id="select" resultMap="monitorInstanceLogTextResult" parameterType="com.skysea.monitor.domain.MonitorInstanceLogText">
+		select * from monitor_instance_log_text where 1 = 1
+		<include refid="sf-monitorInstanceLogText" />
+	</select>
+
+	<select id="selectList" resultMap="monitorInstanceLogTextResultForList" parameterType="com.skysea.monitor.domain.MonitorInstanceLogText">
+		select * from monitor_instance_log_text
+		<where>
+			<include refid="sf-monitorInstanceLogText" />
+		</where>
+		<!-- order by ID asc -->
+		<if test="pager != null and pager.rows != null" >
+			<![CDATA[ limit 0,#{pager.rows}]]>
+		</if>
+	</select>
+
+	<select id="selectCount" resultType="int" parameterType="com.skysea.monitor.domain.MonitorInstanceLogText">
+		select count(*) from monitor_instance_log_text 
+		<where>
+			<include refid="sf-monitorInstanceLogText" />
+		</where>
+	</select>
+
+	<select id="selectPageList" resultMap="monitorInstanceLogTextResult" parameterType="com.skysea.monitor.domain.MonitorInstanceLogText">
+		select * from monitor_instance_log_text 
+		<where>
+			<include refid="sf-monitorInstanceLogText" />
+		</where>
+		<!-- order by ID asc -->
+		<![CDATA[ limit #{pager.first},#{pager.rows}]]>
+	</select>
+
+	<insert id="insert" parameterType="com.skysea.monitor.domain.MonitorInstanceLogText">
+		<![CDATA[insert into monitor_instance_log_text]]>
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			 <if test="id != null" >id,</if>
+			 <if test="monitorInstanceLogId != null" >monitor_instance_log_id,</if>
+			 <if test="receivedContent != null" >received_content,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			 <if test="id != null" >#{id,jdbcType=INTEGER},</if>
+			 <if test="monitorInstanceLogId != null" >#{monitorInstanceLogId,jdbcType=INTEGER},</if>
+			 <if test="receivedContent != null" >#{receivedContent,jdbcType=LONGVARCHAR},</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="com.skysea.monitor.domain.MonitorInstanceLogText">
+		update monitor_instance_log_text
+		<trim prefix="SET" suffixOverrides=",">  
+			<if test="id != null" >id = #{id,jdbcType=INTEGER},</if>
+			<if test="monitorInstanceLogId != null" >monitor_instance_log_id = #{monitorInstanceLogId,jdbcType=INTEGER},</if>
+			<if test="receivedContent != null" >received_content = #{receivedContent,jdbcType=LONGVARCHAR},</if>
+		</trim>
+		<where>
+			<if test="id != null" > and ID = #{id}</if>
+			<if test="id == null" > and 
+			  <if test="map.pks != null">
+					ID in
+					 <foreach collection="map.pks" item="item" index="index" open="(" separator="," close=")">#{item}</foreach>
+				</if>
+			</if>
+		</where>
+	</update>
+
+	<delete id="delete" parameterType="com.skysea.monitor.domain.MonitorInstanceLogText">
+		delete from monitor_instance_log_text
+		<where>
+			<if test="id != null" > and ID = #{id}</if>
+			<if test="id == null" > and 
+			  <if test="map.pks != null">
+					ID in
+					<foreach collection="map.pks" item="item" index="index" open="(" separator="," close=")">#{item}</foreach>
+				</if>
+			</if>
+		</where>
+	</delete>
+	
+	<update id="insertBatch" parameterType="java.util.List">
+		<![CDATA[insert into monitor_instance_log_text]]>
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+				id,
+				monitor_instance_log_id,
+				received_content,
+		</trim>
+		values
+		 <foreach collection ="list" item ="item" index ="index" separator =",">
+		   (
+			 #{item.id,jdbcType=INTEGER},
+			 #{item.monitorInstanceLogId,jdbcType=INTEGER},
+			 #{item.receivedContent,jdbcType=LONGVARCHAR}
+		   )
+	     </foreach >
+	</update>
+
+</mapper>
