@@ -39,6 +39,8 @@ public class HostInfoController extends BaseController{
 //			response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
 			super.renderJson(response, callback+"(" + mapper.writeValueAsString(result) +");" );
 		}catch(Exception e){
+			result.setMessage(e.getMessage());
+			result.setFlag(false);
 			e.printStackTrace();
 			LOG.error(e.getMessage());
 		}
@@ -84,6 +86,8 @@ public class HostInfoController extends BaseController{
 //			response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
 			super.renderJson(response, callback+"(" + mapper.writeValueAsString(result) +");" );
 		} catch (Exception e) {
+			result.setMessage(e.getMessage());
+			result.setFlag(false);
 			e.printStackTrace();
 			LOG.error(e.getMessage());
 		}
@@ -109,6 +113,8 @@ public class HostInfoController extends BaseController{
 //			response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
 			super.renderJson(response, callback+"(" + mapper.writeValueAsString(result) +");" );
 		} catch (Exception e) {
+			result.setMessage(e.getMessage());
+			result.setFlag(false);
 			e.printStackTrace();
 			LOG.error(e.getMessage());
 		}
@@ -127,8 +133,11 @@ public class HostInfoController extends BaseController{
 //			response.setHeader("Access-Control-Allow-Origin", "*");
 //			response.setHeader("Access-Control-Allow-Methods", "POST");
 //			response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+			result.setResult("delete success");
 			super.renderJson(response, callback+"(" + mapper.writeValueAsString(result) +");" );
 		} catch (Exception e) {
+			result.setMessage(e.getMessage());
+			result.setFlag(false);
 			e.printStackTrace();
 			LOG.error(e.getMessage());
 		}
