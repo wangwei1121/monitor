@@ -20,7 +20,7 @@
 	<util:properties id="configProperties" location="classpath:config.properties" />
 
 	<import resource="spring-mvc.xml" />
-	<import resource="spring-jms.xml" />
+<!-- 	<import resource="spring-jms.xml" /> -->
 
 	<!-- ========================= RESOURCE DEFINITIONS ========================= -->
 	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">

@@ -3,12 +3,16 @@ package com.skysea.monitor.web.controller;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skysea.monitor.domain.HostInfo;
 import com.skysea.monitor.service.HostInfoService;
 import com.skysea.monitor.web.entity.UIResult;
@@ -20,7 +24,7 @@ public class HostInfoController extends BaseController{
 	private HostInfoService hostInfoService;
 
 	@RequestMapping(value = "/hostInfo/list")
-	public UIResult list() {
+	public UIResult list(HttpServletRequest request, HttpServletResponse response) {
 		UIResult result = new UIResult();
 		try{
 			List<HostInfo> list = this.hostInfoService.getList(null);
@@ -28,12 +32,17 @@ public class HostInfoController extends BaseController{
 				result.setResult(list);
 				result.setTotalCount(list.size());
 			}
+			String callback = request.getParameter("callback");
+			ObjectMapper mapper = new ObjectMapper();
+//			response.setHeader("Access-Control-Allow-Origin", "*");
+//			response.setHeader("Access-Control-Allow-Methods", "POST");
+//			response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+			super.renderJson(response, callback+"(" + mapper.writeValueAsString(result) +");" );
 		}catch(Exception e){
 			e.printStackTrace();
 			LOG.error(e.getMessage());
 		}
-		
-		return result;
+		return null;
 	}
 
 	@RequestMapping(value = "/hostInfo/add")
@@ -43,7 +52,7 @@ public class HostInfoController extends BaseController{
 	}
 	
 	@RequestMapping(value = "/hostInfo/save")
-	public UIResult save(HostInfo entity) {
+	public UIResult save(HostInfo entity,HttpServletRequest request, HttpServletResponse response) {
 		UIResult result = new UIResult();
 		try {
 			if(null == entity || null == entity.getIp() || null == entity.getPort() || null == entity.getName()){
@@ -56,16 +65,29 @@ public class HostInfoController extends BaseController{
 					this.hostInfoService.update(entity);
 					result.setResult("update success");	
 				}else{
-					entity.setCreateTime(now);
-					this.hostInfoService.insert(entity);
-					result.setResult("insert success");
+					HostInfo hostInfo = new HostInfo();
+					hostInfo.setName(entity.getName());
+					Integer count = this.hostInfoService.getCount(hostInfo);
+					if(count > 0){
+						result.setMessage(entity.getName() + " have exists");
+					}else{
+						entity.setCreateTime(now);
+						this.hostInfoService.insert(entity);
+						result.setResult("insert success");
+					}
 				}
 			}
+			String callback = request.getParameter("callback");
+			ObjectMapper mapper = new ObjectMapper();
+//			response.setHeader("Access-Control-Allow-Origin", "*");
+//			response.setHeader("Access-Control-Allow-Methods", "POST");
+//			response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+			super.renderJson(response, callback+"(" + mapper.writeValueAsString(result) +");" );
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOG.error(e.getMessage());
 		}
-		return result;
+		return null;
 	}
 	
 	@RequestMapping(value = "/hostInfo/edit/{id}")

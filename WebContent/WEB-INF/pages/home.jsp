@@ -9,9 +9,18 @@
 </head>
 <body id="home_body">
 hellow
+<script type="text/javascript"  src="${ctx}/scripts/jquery-1.11.1.min.js"></script>
  <script type="text/javascript">
 	$(function(){
-		
+		$.ajax({
+			   type: "post",
+			   url: 'http://121.40.112.242:8080/monitor/hostInfo/list',
+			   dataType:'jsonp',
+			   jsonp: "callback",
+			   success: function(msg){
+			       console.log( msg); 
+			   }
+			});
 	});
  </script>
 </body>
