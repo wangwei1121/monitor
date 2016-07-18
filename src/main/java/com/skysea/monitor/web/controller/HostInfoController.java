@@ -91,7 +91,7 @@ public class HostInfoController extends BaseController{
 	}
 	
 	@RequestMapping(value = "/hostInfo/edit/{id}")
-	public UIResult edit(@PathVariable Integer id) {
+	public UIResult edit(@PathVariable Integer id,HttpServletRequest request, HttpServletResponse response) {
 		UIResult result = new UIResult();
 		try {
 			HostInfo entity = new HostInfo();
@@ -102,11 +102,17 @@ public class HostInfoController extends BaseController{
 			}else{
 				result.setResult(entity);
 			}
+			String callback = request.getParameter("callback");
+			ObjectMapper mapper = new ObjectMapper();
+//			response.setHeader("Access-Control-Allow-Origin", "*");
+//			response.setHeader("Access-Control-Allow-Methods", "POST");
+//			response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+			super.renderJson(response, callback+"(" + mapper.writeValueAsString(result) +");" );
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOG.error(e.getMessage());
 		}
-		return result;
+		return null;
 	}
 	
 	@RequestMapping(value = "/hostInfo/delete")
