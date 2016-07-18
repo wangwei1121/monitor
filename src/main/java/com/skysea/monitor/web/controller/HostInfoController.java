@@ -90,8 +90,8 @@ public class HostInfoController extends BaseController{
 		return null;
 	}
 	
-	@RequestMapping(value = "/hostInfo/edit/{id}")
-	public UIResult edit(@PathVariable Integer id,HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "/hostInfo/get/{id}")
+	public UIResult get(@PathVariable Integer id,HttpServletRequest request, HttpServletResponse response) {
 		UIResult result = new UIResult();
 		try {
 			HostInfo entity = new HostInfo();
@@ -115,9 +115,23 @@ public class HostInfoController extends BaseController{
 		return null;
 	}
 	
-	@RequestMapping(value = "/hostInfo/delete")
-	public ModelAndView delete() {
-		ModelAndView modelView = new ModelAndView("hostInfo/delete");
-		return modelView;
+	@RequestMapping(value = "/hostInfo/delete/{id}")
+	public ModelAndView delete(@PathVariable Integer id,HttpServletRequest request, HttpServletResponse response) {
+		UIResult result = new UIResult();
+		try {
+			HostInfo entity = new HostInfo();
+			entity.setId(id);
+			this.hostInfoService.delete(entity);
+			String callback = request.getParameter("callback");
+			ObjectMapper mapper = new ObjectMapper();
+//			response.setHeader("Access-Control-Allow-Origin", "*");
+//			response.setHeader("Access-Control-Allow-Methods", "POST");
+//			response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+			super.renderJson(response, callback+"(" + mapper.writeValueAsString(result) +");" );
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOG.error(e.getMessage());
+		}
+		return null;
 	}
 }
